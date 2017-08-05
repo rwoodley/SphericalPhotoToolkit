@@ -1,0 +1,8 @@
+todo:
+- Nicer start page
+- download button. hide debug points on download.
+- validate that only png, gif, jpg are uploaded.
+- remove loxodromic
+- remove debug
+- slower rotate, zoom
+- put in git, github

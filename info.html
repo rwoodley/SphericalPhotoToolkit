@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html >
+	<head>
+        <link rel="stylesheet" type="text/css" href="mediaUtils.css">
+        <link rel="stylesheet" type="text/css" href="transformUtils.css">
+        <style>
+			body {
+				font-family: Arial  ;
+				background-color: #ccc;
+			}
+			li {
+			    list-style-type: none;
+			}
+        </style>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-41066114-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+    <body>
+This page is inspired by several articles by Henry Segerman on M&ouml;bius transformations and spherical image editing. I wrote about the design of this page <a href="http://rwoodley.org/?p=1238">here</a>. 
+There is a video showing how to use it <a href="https://youtu.be/_R5nX_QWJ2Q">here</a>.
+<p/>
+
+<h3>Transformations:</h3>
+<h4>M&ouml;bius transformations:</h4>
+<li><img class="transformControlIcon" src="icons/Epsilon1.svg" /> Set Fixed Point 1 at center of viewport. When debugging, this point is represented by a red dot on the image.</li>
+<li><img class="transformControlIcon" src="icons/Epsilon2.svg" /> Set Fixed Point 2 at center of viewport. When debugging, this point is represented by a blue dot on the image.</li>
+<li><img class="transformControlIcon" src="icons/rotateLeft.png" /> Rotate left around fixed points.(*) </li>
+<li><img class="transformControlIcon" src="icons/rotateRight.png" /> Rotate right around fixed points.(*) </li>
+<li><img class="transformControlIcon" src="icons/pause.png" /> Stop rotating. </li>
+<li><img class="transformControlIcon" src="icons/stop.png" /> No rotation. </li>
+<li><img class="transformControlIcon" src="icons/zoomIn.png" /> Do conformal zoom in on point 1, out on point 2. (*)</li>
+<li><img class="transformControlIcon" src="icons/zoomOut.png" /> Do conformal zoom out on point 1, in on point 2(*). </li>
+<li><img class="transformControlIcon" src="icons/cancel.png" /> Cancel zoom. </li>
+<li><img class="transformControlIcon" src="icons/spiral.png" /> Allows you to a loxodromic transformation. It selects the complex point at the center of the viewport to be the scaling factor. If this is a real number (which it is by default), this corresponds to a simple zoom. A complex number is a combination of rotation and zoom. When debugging, this point is represented by a yellow dot on the image.</li>
+<p/>
+(*) If you click on rotate or zoom without having first selected the fixed points, the system will set the current center of the viewport to be fixed point 1, and the antipodal point to be fixed point 2.
+
+<h4>Complex transformations:</h4>
+If selected, these are applied after the M&ouml;bius transformations have been applied. So 'x' in the equations below is understood to be a complex number that is the result of any selected M&ouml;bius transformations. If more than one of the following transforms is selected they are applied in turn taking the output of the previous transformation to be the input ('x') of the new one.
+
+<li><img class="transformControlIcon" src="icons/transform1Icon.png" /> Text </li>
+<li><img class="transformControlIcon" src="icons/transform2Icon.png" /> Text </li>
+<li><img class="transformControlIcon" src="icons/transform3Icon.png" /> Text </li>
+<li><img class="transformControlIcon" src="icons/transform4Icon.png" /> Text </li>
+
+<h4>Miscellaneous other functions:</h4>
+<li><img class="transformControlIcon" src="icons/reset.png" /> Turn off all transforms, revert to original image/video. </li>
+<li><img class="transformControlIcon" src="icons/toggle.png" /> Toggle view to see effect of transformations on the rectangular texture. </li>
+<li><img class="transformControlIcon" src="icons/debug.png" /> Toggle Show/hide dots representing fixed points. </li>
+
+
+<h3>Video Controls:</h3>
+There are only visible if you are playing a video.
+<li><img class="videoControlIcon" src="icons/rewind.png" /> Skip backwards in the video. </li>
+<li><img class="videoControlIcon" src="icons/stop.png" /> Pause the video. </li>
+<li><img class="videoControlIcon" src="icons/play.png" /> Unpause the video. </li>
+<li><img class="videoControlIcon" src="icons/ff.png" /> Skip forwards in the video. </li>
+<li><img class="videoControlIcon" src="icons/replay.png" /> Replay the video. </li>
+
+<h3>Camera Controls:</h3>
+
+<li><img class="cameraControlIcon" src="icons/left.png" /> Rotate camera to left. Successive clicks increase the speed. </li>
+<li><img class="cameraControlIcon" src="icons/up.png" /> Rotate camera up. Stops at the zenith. </li>
+<li><img class="cameraControlIcon" src="icons/down.png" /> Rotate camera down. Stops at the nadir. </li>
+<li><img class="cameraControlIcon" src="icons/right.png" /> Rotate camera to the right. </li>  
+<li><img class="cameraControlIcon" src="icons/pause.png" /> Stop rotating the camera. </li>
+<li><img class="cameraControlIcon" src="icons/flipCamera.png" /> Flip camera around to view the antipodal point opposite the current position. </li>
+<li><img class="cameraControlIcon" src="icons/fovNarrow.png" /> Decrease the field of view by 15%. </li>
+<li><img class="cameraControlIcon" src="icons/fovWide.png" /> Increase the field of view by 15%. </li>
+<p/>
+Robert Woodley, 2016.<br/>
+<a href="http://rwoodley.org">rwoodley.org</a><br/>
+<a href="http://twitter.com/rwoodley">@rwoodley</a><br/>
+
+
+	</body>
+</html>

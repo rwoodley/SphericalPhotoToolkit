@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html >
+	<head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <style>
+			body {
+				font-family: Arial  ;
+				background-color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+            .availableMediaPanel {
+                position: fixed;
+                top: 0;
+                width: 95%;
+            }
+            .availableMediaPanelInner {
+                width: 90%;
+                margin: 0 auto;             
+            }
+            .cameraPanel {
+                position: fixed;
+                bottom: 0%;
+                width: 95%;
+            }
+            .transformPanel {
+                position: fixed;
+                bottom: 30%;
+                width: 95%;
+            }
+            .complexPanel {
+                position: fixed;
+                bottom: 20%;
+                width: 95%;
+            }
+            .transformPanel2 {
+                position: fixed;
+                bottom: 10%;
+                width: 95%;
+            }
+            .centerAlign {
+                width: 95%;
+                margin: 0 auto;             
+            }
+            .statusText {
+                height:30px;
+                width:300px;
+                color: #00ff00;
+                padding: 5px;
+                background-color: black;
+                display: none;
+            }
+            .wideLabel {
+                width: 80px !important;
+            }
+            .centered {
+                width:800px; margin:0 auto;
+            }
+            .wideWideLabel {
+                padding: 20px 5px 10px 5px;
+                margin: 15px 5px 10px 5px;
+                width: 400px !important;
+                border: 2px solid; 
+                border-color: #6495ED; 
+                color: #fff; 
+                background-color: rgba(47,149,153,.6);
+                height: 40px;
+                display: inline-block;
+                vertical-align: middle;
+
+            }
+            #statsDiv {
+                position: fixed;
+                bottom: 0;
+                z-index:  100;
+                width: 100%;
+            }
+            #statsDivInner {
+                float: right;                
+            }
+            .inputfile {
+                width: 0.1px;
+                height: 0.1px;
+                opacity: 0;
+                overflow: hidden;
+                position: absolute;
+                z-index: -1;
+            }
+            .inputfile + label {
+                font-size: 1.25em;
+                font-weight: 700;
+                color: white;
+                background-color: black;
+                display: inline-block;
+            }
+
+            .inputfile:focus + label,
+            .inputfile + label:hover {
+                background-color: red;
+            }
+            .inputfile + label {
+                cursor: pointer; /* "hand" cursor */
+            }
+		</style>
+        <link rel="stylesheet" type="text/css" href="mediaUtils.css">
+        <link rel="stylesheet" type="text/css" href="transformUtils.css">
+		<script src="r73/three.js"></script>
+        <script src="r73/OrbitControls.js"></script>
+		<script src="r73/Detector.js"></script>
+ 		<script src="r73/stats.min.js"></script>
+		<script src="lib/jquery-3.1.0.min.js"></script>
+        <script src="lib/toast.js"></script>
+        <script src="mediaUtils.js"></script>
+        <script src="transformUtils.js"></script>
+        <script src="utils.js"></script>
+        <script src="media/files.js"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-41066114-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+        <script id="vs_simple" type="x-shader/x-vertex">
+            varying vec2 vUv; 
+            void main()
+            {
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0 );
+                gl_Position = projectionMatrix * mvPosition;
+                vUv = uv;
+            }
+        </script>
+        <script id="fs_simple" type="x-shader/x-fragment">
+            uniform sampler2D iChannel0;
+            varying vec2 vUv;  
+            void main()
+            {
+                vec2 uv = vUv;
+                vec4 tex1 = texture2D( iChannel0,  uv);
+                gl_FragColor = vec4(tex1.r,0.,0.,1.);
+            }
+        </script>
+        <script id="vs" type="x-shader/x-vertex">
+            varying vec2 vUv; 
+            void main()
+            {
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0 );
+                gl_Position = projectionMatrix * mvPosition;
+                vUv = uv;
+            }
+        </script>
+
+        <script id="fs" type="x-shader/x-fragment">
+
+            // ====== Math Utils =======
+
+            #define PI 3.1415926535897932384626433832795
+            #define cx_product(a, b) vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x)
+            #define cx_conjugate(a) vec2(a.x,-a.y)
+            #define cx_divide(a, b) vec2(((a.x*b.x+a.y*b.y)/(b.x*b.x+b.y*b.y)),((a.y*b.x-a.x*b.y)/(b.x*b.x+b.y*b.y)))
+            // emulate OpenGL 4.5's mix(,,bool)
+            float mix(float x, float y, bool a) {
+              return a ? y : x;
+            }
+
+            float atan2(in float y, in float x) {
+                // http://stackoverflow.com/questions/26070410/robust-atany-x-on-glsl-for-converting-xy-coordinate-to-angle
+                bool s = (abs(x) >= abs(y));
+                float res = mix(PI/2.0 - atan(x,y), atan(y,x), s);
+                return res;
+            }
+            // https://github.com/julesb/glsl-util/blob/master/complexvisual.glsl
+            vec2 cx_sqrt(vec2 a) {
+                float r = sqrt(a.x*a.x+a.y*a.y);
+                float rpart = sqrt(0.5*(r+a.x));
+                float ipart = sqrt(0.5*(r-a.x));
+                if (a.y < 0.0) ipart = -ipart;
+                return vec2(rpart,ipart);
+            }
+            vec2 cx_log(vec2 a) {
+                float rpart = sqrt((a.x*a.x)+(a.y*a.y));
+                float ipart = atan2(a.y,a.x);
+                if (ipart > PI) ipart=ipart-(2.0*PI);
+                return vec2(log(rpart),ipart);
+            }
+            vec2 cx_exp(vec2 z) {
+                return vec2(exp(z.x) * cos(z.y), exp(z.x) * sin(z.y));
+            }
+            vec2 cx_pow(vec2 z, vec2 y) {
+                return  cx_exp(cx_product(y, cx_log(z)));
+
+            }
+            vec3 complexToCartesian(vec2 c) {
+                float denom = 1.0 + c.x*c.x + c.y*c.y;
+                float x = 2.*c.x/denom;
+                float y = 2.*c.y/denom;
+                float z = (c.x*c.x + c.y*c.y - 1.0)/denom;
+                return vec3(x,y,z);
+            }
+
+            // ===== shader control variables
+            uniform sampler2D iChannel0;
+            varying vec2 vUv;  
+            uniform float iGlobalTime;
+            uniform float zoomFactor;
+            uniform float loxodromicX;
+            uniform float loxodromicY;
+            uniform float e1x;
+            uniform float e1y;
+            uniform float e2x;
+            uniform float e2y;
+            uniform int mobiusEffectsOnOff; 
+            uniform int complexEffect1OnOff;
+            uniform int complexEffect2OnOff;
+            uniform int complexEffect3OnOff;
+            uniform int complexEffect4OnOff;
+
+            uniform bool showFixedPoints;
+            vec2 one = vec2(1.0, 0.0);
+            vec2 zero = vec2(0.0, 0.0);
+
+            // ====== Transformation Code
+            vec2 applyMobiusTransformation(in vec2 z, in vec2 a, in vec2 b, in vec2 c, in vec2 d) {
+                vec2 top = cx_product(z,a)+b;
+                vec2 bottom = cx_product(z,c)+d;
+                return cx_divide(top,bottom);
+            }
+            vec2 applyInverseMobiusTransform(in vec2 z, in vec2 a, in vec2 b, in vec2 c, in vec2 d) {
+                // inverse is (dz-b)/(-cz+a).
+                return applyMobiusTransformation(z,d,-b,-c,a);
+            }
+            vec2 transformForFixedPoints(in vec2 z, in vec2 e1, in vec2 e2) {
+                return applyMobiusTransformation(z,one,-e1,one,-e2);
+            }
+            vec2 inverseTransformForFixedPoints(in vec2 z, in vec2 e1, in vec2 e2) {
+                // inverse is (dz-b)/(-cz+a). a and c are 1.
+                return applyInverseMobiusTransform(z,one,-e1,one,-e2);
+            }
+            vec2 applyRotation(in vec2 z, in float radians) {
+                // vec2 exp = cx_exp(vec2(0.,radians));
+                vec2 exp = vec2(cos(radians), sin(radians));
+                vec2 ans = cx_product(z, exp);
+                return ans;
+            }
+            vec2 zoom(in vec2 z, in vec2 zoomDegree) {
+                // a real zoomDegree is a streight zoom without twist.
+                // a complex zoomDegree has a twist!
+                vec2 ans = cx_product(zoomDegree,z);
+                return ans;
+            }
+            vec2 anotherTransform(vec2 z) {
+                vec2 i = vec2(0., 1.);
+                vec2 n = z-i;
+                vec2 d = z+i;
+                vec2 f = cx_divide(n,d);
+                vec2 res = 1. * cx_exp(4.*f);
+                return res;
+            }
+            void main() {
+                 float theta;
+                 float phi;
+                 float x;
+                 float y;
+                 float z;
+
+                vec2 uv = vUv;
+                uv.x = clamp(uv.x,0.001,.999);
+
+                // ---------
+                // convert from uv to polar coords
+                vec2 tempuv = uv;
+                theta = (1.0-tempuv[1]) * PI;
+                phi = PI * 2.0 * tempuv[0]+PI;
+
+                // convert polar to cartesian. Theta is polar, phi is azimuth.
+                x = sin(theta)*cos(phi);
+                y = sin(theta)*sin(phi);
+                z = cos(theta);
+
+                // x,y,z are on the unit sphere.
+                // if we pretend that sphere is a riemann sphere, then we
+                // can get the corresponding complex point, a.
+                // http://math.stackexchange.com/questions/1219406/how-do-i-convert-a-complex-number-to-a-point-on-the-riemann-sphere
+
+                // we added the PI to phi above to make the Y axis correspond with
+                // the positive imaginary axis and the X axis correspond with
+                //  the positive real axis. So flip y and x around in this next equation.
+                vec2 a = vec2(y/(1.0-z), x/(1.0-z));
+
+                vec2 result = a;
+                if (mobiusEffectsOnOff == 1) {
+                    vec2 e1 = vec2(e1x,e1y);
+                    vec2 e2 = vec2(e2x,e2y);
+                    vec2 lox = vec2(loxodromicX, loxodromicY);
+                    if (showFixedPoints) {
+                        vec3 e1InCartesian = complexToCartesian(e1);
+                        vec3 e2InCartesian = complexToCartesian(e2);
+                        vec3 aInCartesian = complexToCartesian(a);
+
+                        if (distance(aInCartesian, e1InCartesian) < .05) {
+                            gl_FragColor = vec4(1.,0.,0.,1.);
+                            return;
+                        }
+                        if (distance(aInCartesian, e2InCartesian) < .05) {
+                            gl_FragColor = vec4(0.,0.,1.,1.);
+                            return;
+                        }                       
+                        if (distance(aInCartesian, complexToCartesian(lox)) < .05) {
+                            gl_FragColor = vec4(1.,1.,0.,1.);
+                            return;
+                        }                       
+                    }
+
+                    vec2 b = transformForFixedPoints(a, e1, e2);
+                    vec2 c;
+                    vec2 b1 = applyRotation(b,iGlobalTime/10.);
+                    c = zoom(b1, vec2(loxodromicX, loxodromicY));
+                    result = inverseTransformForFixedPoints(c, e1, e2);
+                }
+                vec2 realNumber = vec2(complexEffect1OnOff, 0.);
+                result = cx_pow(result, realNumber);                    
+                if (complexEffect3OnOff == 1) {
+                    result = anotherTransform(result);
+                }
+                if (complexEffect4OnOff == 1) {
+                    result = cx_exp(result);
+                }
+
+                // // // // now c back to sphere.
+                float denom = 1.0 + result.x*result.x + result.y *result.y;
+                x = 2.0 * result.x/denom;
+                y = 2.0 * result.y/denom;
+                z = (result.x*result.x + result.y*result.y - 1.0)/denom;
+
+                // convert to polar
+                phi = atan2(y, x);
+                phi -= (PI/2.0);    // this correction lines up the UV texture nicely.
+                if (phi <= 0.0) {
+                    phi = phi + PI*2.0; 
+                }
+                if (phi >= (2.0 * PI)) {    // allow 2PI since we gen uv over [0,1]
+                    phi = phi - 2.0 * PI;
+                }
+                phi = 2. * PI - phi;        // flip the texture around.
+                theta = acos(z);
+
+                // now get uv in new chart.
+                float newv = 1.0 - theta/PI;
+                float newu = phi/(2.0 * PI);
+                vec2 newuv = vec2(newu, newv);
+                vec4 tex1 = texture2D( iChannel0,  newuv);
+                gl_FragColor = tex1;
+            }
+
+        </script>
+		<script> 
+			var _container, _stats;
+			var _camera, _controls, _scene, _renderer, _clock, _mediaUtils, _transformUtils;
+			var myMesh;
+			function init(fileObject) {
+                if ( ! Detector.webgl ) {
+                    Detector.addGetWebGLMessage();
+                    document.getElementById( 'container' ).innerHTML = "";
+                }
+
+                _clock = new THREE.Clock();
+                _container = document.getElementById( 'container' );
+
+                _camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 20000 );
+
+                _scene = new THREE.Scene();
+                _controls = new THREE.OrbitControls( _camera, _container.domElement );
+                // _axes = new THREE.AxisHelper( 15000 );
+                // _scene.add(_axes);
+                _renderer =  new THREE.WebGLRenderer({ antialias: true } );
+                _mediaUtils = new mediaUtils(
+                    _scene, 
+                    _camera, 
+                    "mediaListContainer", 
+                    "cameraControlsContainer",
+                    fileObject
+                    );
+
+                _transformUtils = new transformUtils(_camera, 
+                    "transformControlsContainerId", 
+                    "complexControlsContainerId", 
+                    "transformControls2ContainerId",
+                    _mediaUtils);
+
+                _camera.position.x = -1; _camera.position.y = 0.0; _camera.position.z = 0;
+                _renderer.setSize( window.innerWidth, window.innerHeight );
+
+                document.getElementById( 'container' ).innerHTML = "";
+                _container.appendChild( _renderer.domElement );
+
+                _stats = new Stats();
+                document.getElementById('statsDivInner').appendChild( _stats.domElement );    
+
+                animate();
+			}
+
+			function animate() {
+				requestAnimationFrame( animate );
+				_controls.update( _clock.getDelta() );
+				_renderer.render( _scene, _camera );
+                _transformUtils.animate();
+                _stats.update();
+			}
+            $().ready(function() {
+                $('.showhide').hide();
+                if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+                    alert('The File APIs are not fully supported in this browser. Please use a more modern browser.');
+                }
+                else {
+                    function handleFileSelect(evt) {
+                        var files = evt.target.files; // FileList object
+                        init(files[0]);
+                    }
+                    document.getElementById('files').addEventListener('change', handleFileSelect, false);
+                }
+            });
+</script>
+</head>
+	<body>
+		<div id="container">
+            <div class="centered">
+                <input class='inputfile' type="file" id="files" name="files[]"   /> 
+                <!-- <input type="file" name="files[]" id="files" class="inputfile" /> -->
+                <label for="files">
+                    <div class='wideWideLabel'>
+                        &nbsp;<img align='bottom left' style="width:30px;height:20px" src='icons/upload.png' />
+                        &nbsp;&nbsp;&nbsp;Choose an image to process.</div>
+                </label>
+                <p/>
+                <div class="transformControlIcon wideWideLabel" 
+                Style='height: 500px;'
+                >
+    For best results, select an equirectangular image file (which is typically what a 360 camera produces) to edit. 
+    <p/>
+    Then click on the '?' icon for more instructions. 
+    <p/>
+    This app does all of its processing in javascript and WebGL on the client. It does not load your image to a server.
+
+<p/>
+Copyright 2017 - <a href="rwoodley.org">Robert Woodley</a>
+<p/>
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+<p/>
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
+<p/>
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+                </div>
+            </div>
+        </div>
+
+        <div style="position: fixed; top: 20%; width:95%; ">
+             <div id='cameraText' class="statusText"></div>
+             <div id='unitVectorText' class="statusText"></div>
+             <div id='complexPointText' class="statusText"></div>
+        </div>
+        <div class="transformPanel">
+            <div class="centerAlign">
+                <div id="transformControlsContainerId">
+                    <span class='showhide wideLabel label'>M&ouml;bius transforms:</span>
+                </div>
+            </div>
+        </div>
+        <div class="complexPanel">
+            <div class="centerAlign">
+                <div id="complexControlsContainerId">
+                    <span class='showhide wideLabel label'>Complex transforms:</span>
+                </div>
+            </div>
+        </div>
+        <div class="transformPanel2">
+            <div class="centerAlign">
+                <div id="transformControls2ContainerId">
+                    <span class='showhide wideLabel label'>Save, Reset, etc:</span>
+                </div>
+            </div>
+        </div>
+        <div class="cameraPanel">
+            <div class="centerAlign">
+                <div id="cameraControlsContainer">
+                    <span class='showhide wideLabel label'>Camera controls:</span>
+                    <span id="statsDivInner" class="showhide">
+                    </span>
+                </div>
+            </div>
+        </div>
+        <script>
+        </script>
+	</body>
+</html>

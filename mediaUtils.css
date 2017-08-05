@@ -1,0 +1,42 @@
+.cameraControlIcon { 
+    border: 2px solid; 
+    border-color: #6495ED; margin: 5px; padding: 5px; color: #000000; 
+    background-color: rgba(247,219,79,.6);
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.tselector { 
+    font-size: 8pt;
+    border: 2px solid; 
+    border-color: #6495ED; margin: 5px; padding: 5px; 
+    color: #FFF; 
+    background-color: rgba(167,34,110,.9);
+    width: 60px;
+    height: 15px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 20px;
+}
+.vselector { 
+    font-size: 8pt;
+    border: 2px solid; 
+    border-color: #6495ED; margin: 5px; padding: 5px; 
+    color: #FFF; 
+    background-color: rgba(236,32,73,.9);
+    width: 60px;
+    height: 15px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 20px;
+}
+.videoControlIcon { 
+    border: 2px solid; 
+    border-color: #6495ED; margin: 5px; padding: 5px; color: #000000; 
+    background-color: rgba(242,107,56,.6);
+    width: 30px; 
+    height: 30px;
+    display: inline-block;
+    vertical-align: middle;
+}
