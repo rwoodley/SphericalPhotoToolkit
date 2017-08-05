@@ -96,7 +96,7 @@
 
             .inputfile:focus + label,
             .inputfile + label:hover {
-                background-color: red;
+                background-color: rgba(47,149,153,.6);
             }
             .inputfile + label {
                 cursor: pointer; /* "hand" cursor */
@@ -110,10 +110,15 @@
  		<script src="r73/stats.min.js"></script>
 		<script src="lib/jquery-3.1.0.min.js"></script>
         <script src="lib/toast.js"></script>
+
+        <script src="lib/CCapture.js"></script>
+        <script src="lib/CubemapToEquirectangular.js"></script>
+        <script src="lib/Whammy.js"></script>
+        <script src="lib/download.js"></script>
+
         <script src="mediaUtils.js"></script>
         <script src="transformUtils.js"></script>
         <script src="utils.js"></script>
-        <script src="media/files.js"></script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -428,6 +433,15 @@
 	<body>
 		<div id="container">
             <div class="centered">
+                <div class="transformControlIcon wideWideLabel" 
+                Style='
+                color: white;
+                background-color: rgba(147,149,255,.6); padding: 10px 10px 0px 0px;
+                height: 35px; font-size: 24px; text-align: center !important;' 
+                >
+                Spherical Photo Editor
+                </div>
+
                 <input class='inputfile' type="file" id="files" name="files[]"   /> 
                 <!-- <input type="file" name="files[]" id="files" class="inputfile" /> -->
                 <label for="files">
@@ -437,7 +451,7 @@
                 </label>
                 <p/>
                 <div class="transformControlIcon wideWideLabel" 
-                Style='height: 500px;'
+                Style='height: 450px;'
                 >
     For best results, select an equirectangular image file (which is typically what a 360 camera produces) to edit. 
     <p/>

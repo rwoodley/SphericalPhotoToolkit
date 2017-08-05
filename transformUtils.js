@@ -109,6 +109,23 @@ function transformUtils(camera, transformControlsContainerId, complexControlsCon
             that.mediaUtils.toggleView(true);
         }
     }
+    this.downloadImage = function() {
+        console.log("downloading");
+        var cubeCamera = new THREE.CubeCamera( .1, 1000, 4096 );
+        var mirrorSphereMaterial = new THREE.MeshBasicMaterial( 
+            { color: 0xccccff, envMap: cubeCamera.renderTarget, side: THREE.DoubleSide } );
+
+        var sphereGeom =  new THREE.SphereGeometry( 5, 32, 16 ); // radius, segmentsWidth, segmentsHeight
+        var mirrorSphere = new THREE.Mesh( sphereGeom, mirrorSphereMaterial );
+        _scene.add(mirrorSphere);
+        _renderer.render( _scene, _camera );
+
+
+        var equiUnmanaged = new CubemapToEquirectangular( _renderer, false );
+        cubeCamera.updateCubeMap( _renderer, _scene );
+        equiUnmanaged.convert( cubeCamera );
+        _scene.remove(mirrorSphere);        
+    }
     function appendSingleIcon(containerEl, style, png, title, callback) {
     	var el;
     	el = document.createElement('span');
