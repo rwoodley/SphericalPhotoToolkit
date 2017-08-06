@@ -26,49 +26,44 @@
 
     </head>
     <body>
+<h3>Quick Start - How to rotate a 360 photo:</h3>
+Use the mouse to move the photo around. Click on 
+<img class="transformControlIcon" src="icons/rotateLeft.png" /> and
+<img class="transformControlIcon" src="icons/rotateRight.png" /> to rotate it as desired.
+Click on <img class="transformControlIcon" src="icons/download.png" /> to save.
+<h3>Details:</h3>
 This page is inspired by several articles by Henry Segerman on M&ouml;bius transformations and spherical image editing. I wrote about the design of this page <a href="http://rwoodley.org/?p=1238">here</a>. 
-There is a video showing how to use it <a href="https://youtu.be/_R5nX_QWJ2Q">here</a>.
+There is a video showing how to use it <a href="https://youtu.be/WmNrGE0aLlc">here</a>.
 <p/>
-
 <h3>Transformations:</h3>
 <h4>M&ouml;bius transformations:</h4>
-<li><img class="transformControlIcon" src="icons/Epsilon1.svg" /> Set Fixed Point 1 at center of viewport. When debugging, this point is represented by a red dot on the image.</li>
-<li><img class="transformControlIcon" src="icons/Epsilon2.svg" /> Set Fixed Point 2 at center of viewport. When debugging, this point is represented by a blue dot on the image.</li>
-<li><img class="transformControlIcon" src="icons/rotateLeft.png" /> Rotate left around fixed points.(*) </li>
-<li><img class="transformControlIcon" src="icons/rotateRight.png" /> Rotate right around fixed points.(*) </li>
+<li><img class="transformControlIcon" src="icons/rotateLeft.png" /> Rotate left around fixed points.(*) Successive clicks speed up the rotation speed.</li>
+<li><img class="transformControlIcon" src="icons/rotateRight.png" /> Rotate right. </li>
 <li><img class="transformControlIcon" src="icons/pause.png" /> Stop rotating. </li>
 <li><img class="transformControlIcon" src="icons/stop.png" /> No rotation. </li>
 <li><img class="transformControlIcon" src="icons/zoomIn.png" /> Do conformal zoom in on point 1, out on point 2. (*)</li>
-<li><img class="transformControlIcon" src="icons/zoomOut.png" /> Do conformal zoom out on point 1, in on point 2(*). </li>
+<li><img class="transformControlIcon" src="icons/zoomOut.png" /> Do conformal zoom out on point 1, in on point 2. (*)</li>
 <li><img class="transformControlIcon" src="icons/cancel.png" /> Cancel zoom. </li>
-<li><img class="transformControlIcon" src="icons/spiral.png" /> Allows you to a loxodromic transformation. It selects the complex point at the center of the viewport to be the scaling factor. If this is a real number (which it is by default), this corresponds to a simple zoom. A complex number is a combination of rotation and zoom. When debugging, this point is represented by a yellow dot on the image.</li>
+<li><img class="transformControlIcon" src="icons/Epsilon1.svg" /> Set Fixed Point 1 at center of viewport. When debugging, this point is represented by a red dot on the image.</li>
+<li><img class="transformControlIcon" src="icons/Epsilon2.svg" /> Set Fixed Point 2 at center of viewport. When debugging, this point is represented by a blue dot on the image.</li>
+<li><img class="transformControlIcon" src="icons/debug.png" /> Show/hide dots representing fixed points. </li>
 <p/>
 (*) If you click on rotate or zoom without having first selected the fixed points, the system will set the current center of the viewport to be fixed point 1, and the antipodal point to be fixed point 2.
 
 <h4>Complex transformations:</h4>
-If selected, these are applied after the M&ouml;bius transformations have been applied. So 'x' in the equations below is understood to be a complex number that is the result of any selected M&ouml;bius transformations. If more than one of the following transforms is selected they are applied in turn taking the output of the previous transformation to be the input ('x') of the new one.
-
-<li><img class="transformControlIcon" src="icons/transform1Icon.png" /> Text </li>
-<li><img class="transformControlIcon" src="icons/transform2Icon.png" /> Text </li>
-<li><img class="transformControlIcon" src="icons/transform3Icon.png" /> Text </li>
-<li><img class="transformControlIcon" src="icons/transform4Icon.png" /> Text </li>
+If selected, these are applied after the M&ouml;bius transformations have been applied. The effects can be combined.
+<li><img class="transformControlIcon" src="icons/transform1Icon.png" /> Successive clicks increment n.</li>
+<li><img class="transformControlIcon" src="icons/transform2Icon.png" /> Successive clicks decrement n. </li>
+<li><img class="transformControlIcon" src="icons/transform3Icon.png" /> Successive clicks toggle the effect on/off. </li>
+<li><img class="transformControlIcon" src="icons/transform4Icon.png" /> Successive clicks toggle the effect on/off. </li>
 
 <h4>Miscellaneous other functions:</h4>
-<li><img class="transformControlIcon" src="icons/reset.png" /> Turn off all transforms, revert to original image/video. </li>
+<li><img class="transformControlIcon" src="icons/download.png" /> Download the modified 360 photo as an equirectangular image. </li>
+<li><img class="transformControlIcon" src="icons/reset.png" /> Turn off all transforms, revert to original image. </li>
 <li><img class="transformControlIcon" src="icons/toggle.png" /> Toggle view to see effect of transformations on the rectangular texture. </li>
-<li><img class="transformControlIcon" src="icons/debug.png" /> Toggle Show/hide dots representing fixed points. </li>
-
-
-<h3>Video Controls:</h3>
-There are only visible if you are playing a video.
-<li><img class="videoControlIcon" src="icons/rewind.png" /> Skip backwards in the video. </li>
-<li><img class="videoControlIcon" src="icons/stop.png" /> Pause the video. </li>
-<li><img class="videoControlIcon" src="icons/play.png" /> Unpause the video. </li>
-<li><img class="videoControlIcon" src="icons/ff.png" /> Skip forwards in the video. </li>
-<li><img class="videoControlIcon" src="icons/replay.png" /> Replay the video. </li>
 
 <h3>Camera Controls:</h3>
-
+These have no effect on the image that is downloaded. They just effect how the camera works, but not the underlying image.
 <li><img class="cameraControlIcon" src="icons/left.png" /> Rotate camera to left. Successive clicks increase the speed. </li>
 <li><img class="cameraControlIcon" src="icons/up.png" /> Rotate camera up. Stops at the zenith. </li>
 <li><img class="cameraControlIcon" src="icons/down.png" /> Rotate camera down. Stops at the nadir. </li>
@@ -78,10 +73,26 @@ There are only visible if you are playing a video.
 <li><img class="cameraControlIcon" src="icons/fovNarrow.png" /> Decrease the field of view by 15%. </li>
 <li><img class="cameraControlIcon" src="icons/fovWide.png" /> Increase the field of view by 15%. </li>
 <p/>
-Robert Woodley, 2016.<br/>
+The code is on GitHub at: https://github.com/rwoodley/SphericalPhotoToolkit
+<p/>
+Robert Woodley, 2016-2017.<br/>
 <a href="http://rwoodley.org">rwoodley.org</a><br/>
 <a href="http://twitter.com/rwoodley">@rwoodley</a><br/>
+<p/>
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+<p/>
 
+<a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
+<p/>
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+  
 
 	</body>
 </html>

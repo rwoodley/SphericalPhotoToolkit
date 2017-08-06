@@ -7,7 +7,7 @@
 				font-family: Arial  ;
 				background-color: #000;
 				margin: 0px;
-				overflow: hidden;
+				/* overflow: hidden; */
 			}
             .availableMediaPanel {
                 position: fixed;
@@ -44,7 +44,7 @@
             }
             .statusText {
                 height:30px;
-                width:300px;
+                width:500px;
                 color: #00ff00;
                 padding: 5px;
                 background-color: black;
@@ -313,11 +313,7 @@
                         if (distance(aInCartesian, e2InCartesian) < .05) {
                             gl_FragColor = vec4(0.,0.,1.,1.);
                             return;
-                        }                       
-                        if (distance(aInCartesian, complexToCartesian(lox)) < .05) {
-                            gl_FragColor = vec4(1.,1.,0.,1.);
-                            return;
-                        }                       
+                        }
                     }
 
                     vec2 b = transformForFixedPoints(a, e1, e2);
@@ -423,6 +419,7 @@
                 else {
                     function handleFileSelect(evt) {
                         var files = evt.target.files; // FileList object
+                        document.body.style.overflow = 'hidden';
                         init(files[0]);
                     }
                     document.getElementById('files').addEventListener('change', handleFileSelect, false);
@@ -446,21 +443,21 @@
                 <!-- <input type="file" name="files[]" id="files" class="inputfile" /> -->
                 <label for="files">
                     <div class='wideWideLabel'>
-                        &nbsp;<img align='bottom left' style="width:30px;height:20px" src='icons/upload.png' />
+                        &nbsp;<img align='bottom left' style="width:30px;height:20px" src='icons/upload.svg' />
                         &nbsp;&nbsp;&nbsp;Choose an image to process.</div>
                 </label>
                 <p/>
                 <div class="transformControlIcon wideWideLabel" 
-                Style='height: 450px;'
+                Style='height: 600px;'
                 >
-    For best results, select an equirectangular image file (which is typically what a 360 camera produces) to edit. 
+    This simple app works on so-called 360 degree photos, created by devices such as the Ricoh Theta. Such cameras produce equirectangular stills. This app allows you to rotate these photos along any axis and save the result as a new equirectangular image. You can also apply zoom effects and do a few other interesting transformations.
     <p/>
-    Then click on the '?' icon for more instructions. 
+    Select an image by clicking on the Upload button above. Then once the image is loaded, click on the '?' icon for more instructions. 
     <p/>
     This app does all of its processing in javascript and WebGL on the client. It does not load your image to a server.
 
 <p/>
-Copyright 2017 - <a href="rwoodley.org">Robert Woodley</a>
+Copyright 2017 - <a href="http://rwoodley.org">Robert Woodley</a>
 <p/>
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

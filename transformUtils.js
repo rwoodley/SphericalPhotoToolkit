@@ -75,11 +75,11 @@ function transformUtils(camera, transformControlsContainerId, complexControlsCon
     	appendSingleIcon(container, 'transformControlIcon', 'cancel.png', 'Cancel Zoom', that.zoomCancel);
     	appendSingleIcon(container, 'transformControlIcon', 'Epsilon1.svg', 'Set Fixed Point 1', that.setFixedPoint1);
         appendSingleIcon(container, 'transformControlIcon', 'Epsilon2.svg', 'Set Fixed Point 2', that.setFixedPoint2);
+        appendSingleIcon(container, 'transformControlIcon', 'debug.png', 'Show Fixed Points', that.toggleDebugInfo);
 
     	var container = document.getElementById(that.transformControls2ContainerId);
     	appendSingleIcon(container, 'transformControlIcon', 'download.png', 'Download adjusted image.', that.downloadImage);
         appendSingleIcon(container, 'transformControlIcon', 'reset.png', 'Reset', that.reset);
-        appendSingleIcon(container, 'transformControlIcon', 'debug.png', 'Show/Hide Debug Info', that.toggleDebugInfo);
         appendSingleIcon(container, 'transformControlIcon', 'toggle.png', 'Toggle View', that.toggleView);
         appendSingleIcon(container, 'transformControlIcon', 'help.png', 'Help/Info', that.showHelpPage);
     	// appendSingleIcon(container, 'transformControlIcon', 'upload.png', 'Upload equirectangular image.', that.uploadImage);
@@ -110,7 +110,7 @@ function transformUtils(camera, transformControlsContainerId, complexControlsCon
         }
     }
     this.downloadImage = function() {
-        console.log("downloading");
+    	that.uniforms.showFixedPoints.value = 0;
         var cubeCamera = new THREE.CubeCamera( .1, 1000, 4096 );
         var mirrorSphereMaterial = new THREE.MeshBasicMaterial( 
             { color: 0xccccff, envMap: cubeCamera.renderTarget, side: THREE.DoubleSide } );
@@ -236,16 +236,16 @@ function transformUtils(camera, transformControlsContainerId, complexControlsCon
     }
     this.toggleDebugInfo = function() {
     	that.uniforms.showFixedPoints.value = that.uniforms.showFixedPoints.value == 0 ? 1 : 0;
-    	if (that.uniforms.showFixedPoints.value == 0) {
-            $('.statusText').hide();
-		}
-		else {
-            $('.statusText').show();
-		}
+    	// if (that.uniforms.showFixedPoints.value == 0) {
+        //     $('.statusText').hide();
+		// }
+		// else {
+        //     $('.statusText').show();
+		// }
 
     }
     this.animate = function() {
-        that.uniforms.iGlobalTime.value = that.uniforms.iGlobalTime.value  + .1*that.rotateDirection;
+        that.uniforms.iGlobalTime.value = that.uniforms.iGlobalTime.value  + .005*that.rotateDirection;
     	that.updateVariousNumbersForCamera();
         that.mediaUtils.animate(that.cameraVectorLength);
     }
