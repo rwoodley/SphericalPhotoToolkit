@@ -73,7 +73,16 @@ These have no effect on the image that is downloaded. They just effect how the c
 <li><img class="cameraControlIcon" src="icons/fovNarrow.png" /> Decrease the field of view by 15%. </li>
 <li><img class="cameraControlIcon" src="icons/fovWide.png" /> Increase the field of view by 15%. </li>
 <p/>
-The code is on GitHub at: https://github.com/rwoodley/SphericalPhotoToolkit
+The code is on GitHub at: <a href="https://github.com/rwoodley/SphericalPhotoToolkit">https://github.com/rwoodley/SphericalPhotoToolkit</a>
+<p/>
+Note that if you plan to upload a picture that has been created by this app to something like Facebook, some post-processing is required. This app does not insert the EXIF tags that Facebook and others require. These are the steps required to get Facebook to recognize your photo as a 360 photo:<br/>
+1 - Convert it from a PNG to a JPG. Many ways to do this.<br/>
+2 - I use exiftool to add in the meta data. For instance:<br/>
+<pre>
+exiftool -MAKE='RICOH'  -Model='RICOH THETA S' mypic.jpg
+</pre>
+<p/>
+<hr/>
 <p/>
 Robert Woodley, 2016-2017.<br/>
 <a href="http://rwoodley.org">rwoodley.org</a><br/>
